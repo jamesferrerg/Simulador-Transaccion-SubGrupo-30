@@ -1,7 +1,9 @@
 package conexion;
 
 import java.sql.*;
+import java.text.*;
 import java.util.*;
+import javax.swing.*;
 
 /**
  * 
@@ -31,10 +33,9 @@ public class Conexion {
 		try {
 			Class.forName(driver);
 			con = DriverManager.getConnection(url, user, pwd);
-			System.out.println("Conexión establecida con éxito");
-			System.out.println("Seleccione la transacción que desee de acuerdo al número: \n1. Crear cliente \n"
-					+ "2. Salir \n");
-			int transaccion = seleccionTransaccion.nextInt();
+			JOptionPane.showMessageDialog(null, "Conexión establecida con éxito");
+			int transaccion = Integer.parseInt(JOptionPane.showInputDialog(
+					"Seleccione la transacción que desee de acuerdo al número: \n1. Crear cliente \n" + "2. Salir \n"));
 			switch (transaccion) {
 			case 1:
 				crearCliente(con, pstm);
@@ -52,22 +53,31 @@ public class Conexion {
 	}
 
 	// DAO - Create
-	public void crearCliente(Connection con, PreparedStatement pstm) throws SQLException {
-		System.out.println("Iniciando creación de cliente");
+	public void crearCliente(Connection con, PreparedStatement pstm) throws SQLException, ParseException {
+		JOptionPane.showMessageDialog(null, "Iniciando creación de cliente");
 		String sql = "INSERT INTO `banco_db`.`cliente` (`id_cliente`, `nombres`, `apellidos`, "
 				+ "`numero_identificacion`, `fecha_nacimiento`, `telefono`, `email`, `direccion`)";
 
 		sql += "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
+		int id_cliente = Integer.parseInt(JOptionPane.showInputDialog("id_cliente: "));
+		String nombres = JOptionPane.showInputDialog("nombres: ");
+		String apellidos = JOptionPane.showInputDialog("apellidos: ");
+		int numero_identificacion = Integer.parseInt(JOptionPane.showInputDialog("numero_identificacion: "));
+		String fecha_nacimiento = JOptionPane.showInputDialog("fecha_nacimiento: YYYY/MM/DD ");
+		long telefono = Long.parseLong(JOptionPane.showInputDialog("telefono: "));
+		String email = JOptionPane.showInputDialog("email: ");
+		String direccion = JOptionPane.showInputDialog("direccion ");
+
 		pstm = con.prepareStatement(sql);
-		pstm.setInt(1, 3);
-		pstm.setString(2, "Siri S");
-		pstm.setString(3, "Goo g");
-		pstm.setString(4, "400879");
-		pstm.setString(5, "1991-01-25");
-		pstm.setLong(6, 6059999);
-		pstm.setString(7, "siri@mail.com");
-		pstm.setString(8, "Diag 1 # 99-99");
+		pstm.setInt(1, id_cliente);
+		pstm.setString(2, nombres);
+		pstm.setString(3, apellidos);
+		pstm.setInt(4, numero_identificacion);
+		pstm.setString(5, fecha_nacimiento);
+		pstm.setLong(6, telefono);
+		pstm.setString(7, email);
+		pstm.setString(8, direccion);
 
 		int aplique = pstm.executeUpdate();
 		if (aplique == 1) {
